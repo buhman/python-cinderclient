@@ -171,15 +171,8 @@ def print_list(objs, fields, exclude_unavailable=False, formatters=None,
 
 
 def print_dict(d, property="Property"):
-    pt = prettytable.PrettyTable([property, 'Value'], caching=False)
-    pt.aligns = ['l', 'l']
-    for r in six.iteritems(d):
-        r = list(r)
-        if isinstance(r[1], six.string_types) and "\r" in r[1]:
-            r[1] = r[1].replace("\r", " ")
-        pt.add_row(r)
-    _print(pt, property)
-
+    import yaml
+    print(yaml.safe_dump(d, default_flow_style=False))
 
 def find_resource(manager, name_or_id):
     """Helper for the _find_* methods."""

@@ -64,59 +64,7 @@ class Manager(utils.HookableMixin):
 
     def _list(self, url, response_key, obj_class=None, body=None,
               limit=None, items=None):
-        resp = None
-        if items is None:
-            items = []
-        if body:
-            resp, body = self.api.client.post(url, body=body)
-        else:
-            resp, body = self.api.client.get(url)
-
-        if obj_class is None:
-            obj_class = self.resource_class
-
-        data = body[response_key]
-        # NOTE(ja): keystone returns values as list as {'values': [ ... ]}
-        #           unlike other services which just return the list...
-        if isinstance(data, dict):
-            try:
-                data = data['values']
-            except KeyError:
-                pass
-
-        with self.completion_cache('human_id', obj_class, mode="w"):
-            with self.completion_cache('uuid', obj_class, mode="w"):
-                items_new = [obj_class(self, res, loaded=True)
-                             for res in data if res]
-        if limit:
-            limit = int(limit)
-            margin = limit - len(items)
-            if margin <= len(items_new):
-                # If the limit is reached, return the items.
-                items = items + items_new[:margin]
-                return items
-            else:
-                items = items + items_new
-        else:
-            items = items + items_new
-
-        # It is possible that the length of the list we request is longer
-        # than osapi_max_limit, so we have to retrieve multiple times to
-        # get the complete list.
-        next = None
-        if 'volumes_links' in body:
-            volumes_links = body['volumes_links']
-            if volumes_links:
-                for volumes_link in volumes_links:
-                    if 'rel' in volumes_link and 'next' == volumes_link['rel']:
-                        next = volumes_link['href']
-                        break
-            if next:
-                # As long as the 'next' link is not empty, keep requesting it
-                # till there is no more items.
-                items = self._list(next, response_key, obj_class, None,
-                                   limit, items)
-        return items
+        return []
 
     def _build_list_url(self, resource_type, detailed=True, search_opts=None,
                         marker=None, limit=None, sort_key=None, sort_dir=None,

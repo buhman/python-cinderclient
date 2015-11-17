@@ -20,6 +20,13 @@ Command-line interface to the OpenStack Cinder API.
 
 from __future__ import print_function
 
+import warnings
+
+def f(*args, **kwargs):
+    pass
+
+warnings.showwarning = f
+
 import argparse
 import getpass
 import glob
@@ -58,7 +65,6 @@ DEFAULT_CINDER_SERVICE_TYPE = 'volume'
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
-
 
 class CinderClientArgumentParser(argparse.ArgumentParser):
 
@@ -914,5 +920,4 @@ def main():
 
 
 if __name__ == "__main__":
-
     main()
