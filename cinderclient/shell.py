@@ -20,6 +20,13 @@ Command-line interface to the OpenStack Cinder API.
 
 from __future__ import print_function
 
+import warnings
+
+def f(*args, **kwargs):
+    pass
+
+warnings.showwarning = f
+
 import argparse
 import getpass
 import glob

@@ -171,17 +171,11 @@ def print_list(objs, fields, exclude_unavailable=False, formatters=None,
 
 
 def print_dict(d, property="Property"):
-    pt = prettytable.PrettyTable([property, 'Value'], caching=False)
-    pt.aligns = ['l', 'l']
-    for r in six.iteritems(d):
-        r = list(r)
-        if isinstance(r[1], six.string_types) and "\r" in r[1]:
-            r[1] = r[1].replace("\r", " ")
-        pt.add_row(r)
-    _print(pt, property)
+    import yaml
+    print(yaml.safe_dump(d, default_flow_style=False))
 
 
-def find_resource(manager, name_or_id):
+def find_resource(manager, name_or_id, human_id=False):
     """Helper for the _find_* methods."""
     # first try to get entity as integer id
     try:
@@ -199,6 +193,11 @@ def find_resource(manager, name_or_id):
 
     if sys.version_info <= (3, 0):
         name_or_id = encodeutils.safe_decode(name_or_id)
+
+    if not human_id:
+        msg = "No %s with a ID of '%s' exists." % \
+              (manager.resource_class.__name__.lower(), name_or_id)
+        raise exceptions.CommandError(msg)
 
     try:
         try:
@@ -223,9 +222,9 @@ def find_resource(manager, name_or_id):
         raise exceptions.CommandError(msg)
 
 
-def find_volume(cs, volume):
+def find_volume(cs, volume, human_id=False):
     """Get a volume by name or ID."""
-    return find_resource(cs.volumes, volume)
+    return find_resource(cs.volumes, volume, human_id)
 
 
 def safe_issubclass(*args):

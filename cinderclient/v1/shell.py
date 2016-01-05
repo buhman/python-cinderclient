@@ -836,6 +836,12 @@ def _find_volume_type(cs, vtype):
     """Gets a volume type by name or ID."""
     return utils.find_resource(cs.volume_types, vtype)
 
+# FIXME
+@utils.arg('--resource-human-name',
+           metavar='<True|False>',
+           default=False,
+           help='Allows implicit lookups of resources by human name. '
+                'Default is False.')
 
 @utils.arg('volume',
            metavar='<volume>',
